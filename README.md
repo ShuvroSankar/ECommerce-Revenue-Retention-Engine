@@ -99,8 +99,7 @@ ecommerce-revenue-retention-intelligence/
 │   ├── customer_rfm_segments.sql
 │   ├── customer_cohort_retention.sql
 │   └── product_profit_margins.sql
-└── data/
-    └── (optional) sample extracts or dbt/BigQuery config
+
 ```
 
 > **Where the dashboard itself lives:** Looker Studio dashboards are hosted by Google, not stored as a file in your repo — you can't "commit" the interactive dashboard. What goes in the repo is (1) the **link** to it (the badge + Live Dashboard section above) and (2) a **static screenshot** for anyone browsing the repo without dashboard access. Put that screenshot at `docs/images/dashboard-preview.png`, matching the path already referenced above — GitHub will render it automatically at the top of this README.
