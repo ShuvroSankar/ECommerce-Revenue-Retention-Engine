@@ -114,4 +114,6 @@ ecommerce-revenue-retention-intelligence/
 
 ## License
 
-Add a `LICENSE` file to the repo root (MIT is a reasonable default for a portfolio/analytics project) — the badge above already links to it.
+Code is released under the [MIT License](LICENSE). © 2026 Shuvro Sankar Sen.
+
+The data comes from the public theLook eCommerce dataset on BigQuery and is subject to its own terms, not this license.
