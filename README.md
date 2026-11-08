@@ -36,7 +36,7 @@ Heavy analytical logic is compiled once into permanent BigQuery **views**, so th
 
 ## Live Dashboard
 
-**[→ Open the live Looker Studio dashboard]https://datastudio.google.com/reporting/79cc0f9c-1af3-4801-842c-519ff7ee9c049)***
+[**→ Open the live Looker Studio dashboar**d]https://datastudio.google.com/reporting/79cc0f9c-1af3-4801-842c-519ff7ee9c049
 
 A static preview is embedded above for anyone without dashboard access; the link gives the full interactive version (cross-filtering, date controls, drill-downs).
 
