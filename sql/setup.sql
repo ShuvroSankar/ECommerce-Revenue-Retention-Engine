@@ -26,13 +26,26 @@ GROUP BY order_month;
 
 
 -- ---------------------------------------------------------------------
--- 2. RFM customer segments  (logic unchanged from the original)
+-- 2. RFM customer segments
+--    Changes vs. the original:
+--      * Recency is measured from the dataset's latest order, not
+--        CURRENT_TIMESTAMP(), so results are reproducible day to day.
+--      * Frequency is scored from the actual order count. NTILE(5) split
+--        customers with identical order counts across different buckets
+--        (about 6,100 one-order customers received f_score 4).
+--      * Seven segments replace the old catch-all 'Other' (72% of customers).
+--      * user_id tiebreakers make recency/monetary scoring deterministic.
+--    Output columns are unchanged, so Looker Studio fields still match.
 -- ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW retention_engine.v_customer_rfm_segments AS
 WITH user_info AS (
   SELECT
     user_id,
-    TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), MAX(created_at), DAY) AS recency_days,
+    TIMESTAMP_DIFF(
+      (SELECT MAX(created_at) FROM `bigquery-public-data.thelook_ecommerce.order_items`),
+      MAX(created_at),
+      DAY
+    ) AS recency_days,
     COUNT(DISTINCT order_id) AS total_orders,
     ROUND(SUM(sale_price), 2) AS total_spend
   FROM `bigquery-public-data.thelook_ecommerce.order_items`
@@ -46,18 +59,26 @@ ranked_user_info AS (
     recency_days,
     total_orders,
     total_spend,
-    NTILE(5) OVER (ORDER BY recency_days DESC) AS r_score,
-    NTILE(5) OVER (ORDER BY total_orders ASC)  AS f_score,
-    NTILE(5) OVER (ORDER BY total_spend ASC)   AS m_score
+    NTILE(5) OVER (ORDER BY recency_days DESC, user_id) AS r_score,
+    CASE
+      WHEN total_orders = 1 THEN 1
+      WHEN total_orders = 2 THEN 3
+      WHEN total_orders = 3 THEN 4
+      ELSE 5
+    END AS f_score,
+    NTILE(5) OVER (ORDER BY total_spend ASC, user_id) AS m_score
   FROM user_info
 )
 
 SELECT *,
   CASE
-    WHEN r_score >= 4 AND f_score >= 4 AND m_score >= 4 THEN 'Champions'
-    WHEN r_score <= 2 AND f_score >= 4 AND m_score >= 4 THEN 'Can\'t Lose Them'
-    WHEN r_score >= 4 AND f_score <= 2 THEN 'New Customers'
-    ELSE 'Other'
+    WHEN f_score >= 4 AND r_score >= 4 AND m_score >= 4 THEN 'Champions'
+    WHEN f_score >= 4 AND r_score <= 2 AND m_score >= 4 THEN 'Can\'t Lose Them'
+    WHEN f_score >= 3 AND r_score <= 2                  THEN 'At Risk'
+    WHEN f_score >= 3                                   THEN 'Loyal Customers'
+    WHEN r_score >= 4                                   THEN 'New Customers'
+    WHEN r_score = 3                                    THEN 'Promising'
+    ELSE 'Hibernating'
   END AS customer_segment
 FROM ranked_user_info;
 
