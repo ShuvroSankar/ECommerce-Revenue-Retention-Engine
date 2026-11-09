@@ -2,7 +2,7 @@
 
 A BigQuery + Looker Studio analytics project that turns raw transactional retail data into cohort retention, RFM segmentation, and unit-economics dashboards for executive reporting.
 
-[![Live Dashboard](https://img.shields.io/badge/Live-Dashboard-4285F4?style=for-the-badge&logo=looker&logoColor=white)](https://datastudio.google.com/reporting/328cfb64-a1c7-4128-a08b-e13aedafdc89)
+[![Live Dashboard](https://img.shields.io/badge/Live-Dashboard-4285F4?style=for-the-badge&logo=looker&logoColor=white)](https://datastudio.google.com/u/0/reporting/79cc0f9c-1af3-4801-842c-519ff7ee9c04/page/jFa2F)
 [![BigQuery](https://img.shields.io/badge/Data%20Warehouse-BigQuery-4285F4?style=for-the-badge&logo=googlebigquery&logoColor=white)](./sql)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
 
